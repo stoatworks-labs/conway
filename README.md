@@ -137,8 +137,8 @@ generation at all: the cost is the composite.
 
 What is **not** verified, and is the honest limit of this build:
 
-- **Never in Resolume**, on either platform, and never built on Windows: how its 23
-  and 28 parameters present there, the clock unit, the FFT bins and real audio are
+- **Never in Resolume**, on either platform, and never built on Windows: how its 24
+  and 29 parameters present there, the clock unit, the FFT bins and real audio are
   untested in a host.
 - **Auto Reseed is a heuristic.** It looks for a population that repeats exactly with a
   period of 30 or less for 120 generations. Ash, oscillators and gliders on a torus all
@@ -198,7 +198,9 @@ Filming uses the fleet's frame format and cue sheets:
       | ./build/cwtest --over --pipe --size 1280x720 \
       | ffmpeg -f rawvideo -pix_fmt rgba -s 1280x720 -r 60 -i - over.mp4
 
+<!-- attributions:start -->
 This project is built on other people's work — see [ATTRIBUTIONS.md](ATTRIBUTIONS.md).
+<!-- attributions:end -->
 
 ## Licence
 

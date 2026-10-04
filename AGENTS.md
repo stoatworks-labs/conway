@@ -295,8 +295,8 @@ Assumed, or not done:
 
 - **Never loaded into Resolume**, on either platform; never built on Windows
   (MSVC has not seen it: `<cmath>` is included where used, no `M_PI`, no
-  `far`/`near`, but nothing has compiled it). No Arena gate run, so how the 23
-  and 28 parameters present in Arena, the clock unit Resolume sends, the FFT
+  `far`/`near`, but nothing has compiled it). No Arena gate run, so how the 24
+  and 29 parameters present in Arena, the clock unit Resolume sends, the FFT
   bins and whether events arrive as 1 then 0 are untested in a host.
 - **Occlusion queries in Resolume**: exact by the spec and on both renderers
   here; how many frames late the results arrive inside Resolume is unknown
