@@ -328,6 +328,12 @@ It records the GL vendor, renderer and version at load, and which shader failed 
 - **Only ever run on an Apple M4 Max**, although the macOS build contains an Intel slice. On
   Windows, see the note at the top of this guide.
 - **No presets**, no OpenFX version.
+- **There is a browser demo** at [conway-demo.stoatworks-labs.com](https://conway-demo.stoatworks-labs.com/).
+  It is a port to a web page, not the plugin: the shaders run unedited in WebGL2, and the
+  generation clock, the buttons, the rules, the patterns, the grid and the settle law are
+  rewritten in JavaScript. WebGL2 has no exact occlusion count, so the page reads its count
+  pass back to find the population. It has no audio, so the audio controls are left off, and the
+  page lists what else it does not reproduce.
 
 ---
 
