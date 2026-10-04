@@ -2,9 +2,9 @@
 
 > **AI-assisted project.** This codebase was created with [Claude](https://claude.com/claude-code)
 > (Anthropic), directed and reviewed by a human author. It has **never been
-> loaded into Resolume**. It is loaded by [oxbow](https://github.com/stoatworks-labs/oxbow),
-> a real FFGL host that is not Resolume, which reads both plugins' names, ids and types
-> and renders 120 frames through each. Everything below is measured by an offline
+> loaded into Resolume on macOS**; there it is loaded by [oxbow](https://github.com/stoatworks-labs/oxbow),
+> a real FFGL host that is not Resolume. On Windows both plugins pass the fleet's Arena gate in
+> Resolume Arena 7.27.1 on software rendering (see [Status](#status)). Everything below is measured by an offline
 > harness that drives the real plugin classes in a headless GL context, on this Mac's
 > GPU at two rasters and again on Apple's software renderer. `cwtest --patterns` asks
 > the plugin for the published facts of Life and gets them: the R-pentomino has **116
@@ -29,6 +29,42 @@ keeps feeding it.
 down, newborn cells white, cells that have lived forty generations green, the
 just-dead trailing. Rendered by the plugin's offline harness (`cwtest`), not
 captured from Resolume.</sub>
+
+<!-- downloads:start -->
+
+## Download
+
+**[v0.1.0](https://github.com/stoatworks-labs/conway/releases/tag/v0.1.0)** — prebuilt for macOS and Windows. Pick your platform:
+
+<details>
+<summary><b>macOS</b> — Universal (Apple Silicon + Intel)</summary>
+
+| Build | Download | Size |
+| --- | --- | --- |
+| Universal (Apple Silicon + Intel) · .dmg disk image | [`conway-0.1.0-macos-universal.dmg`](https://github.com/stoatworks-labs/conway/releases/download/v0.1.0/conway-0.1.0-macos-universal.dmg) | 462 KB |
+| Universal (Apple Silicon + Intel) · .zip archive | [`conway-macos-universal.zip`](https://github.com/stoatworks-labs/conway/releases/latest/download/conway-macos-universal.zip) | 408 KB |
+
+</details>
+
+<details>
+<summary><b>Windows</b> — x64</summary>
+
+| Build | Download | Size |
+| --- | --- | --- |
+| x64 · .exe installer | [`conway-0.1.0-windows-x86_64-setup.exe`](https://github.com/stoatworks-labs/conway/releases/download/v0.1.0/conway-0.1.0-windows-x86_64-setup.exe) | 239 KB |
+| x64 · .zip archive | [`conway-windows-x86_64.zip`](https://github.com/stoatworks-labs/conway/releases/latest/download/conway-windows-x86_64.zip) | 245 KB |
+
+</details>
+
+All builds, checksums and release notes: [github.com/stoatworks-labs/conway/releases](https://github.com/stoatworks-labs/conway/releases).
+
+macOS builds are signed and notarised and open normally. The Windows builds are unsigned, so SmartScreen warns once.
+
+<!-- downloads:end -->
+
+## Video
+
+[![Conway: the Game of Life, as a source and an effect for Resolume](docs/video-thumb.png)](https://www.youtube.com/watch?v=GOdiQPrVwPA)
 
 ## The one idea
 
@@ -96,13 +132,38 @@ it.
 
 ## Status
 
-**v0.1.0, built 4 October 2026, not released.** No user guide yet,
-no OpenFX port, no repository on GitHub.
+**v0.1.0, released 4 October 2026, and honestly early.** There is a
+[user guide](https://stoatworks-labs.com/software/conway/guide/)
+([PDF](docs/USER-GUIDE.pdf)), a [project page](https://stoatworks-labs.com/software/conway/)
+and a [browser demo](https://conway-demo.stoatworks-labs.com/) (below).
 
-It has **never been loaded into Resolume**, on macOS or Windows. `oxbow probe` reads the
-bundles as a host does (`SW Conway` / `LF01` / source, `SW Conway Over` / `LF02` /
-effect) and `oxbow selftest` renders 120 frames through each. It has never been built
-on Windows. Built and measured on macOS (Apple Silicon, M4 Max).
+It has **never been loaded into Resolume on macOS**. `oxbow probe` reads the bundles as
+a host does (`SW Conway` / `LF01` / source, `SW Conway Over` / `LF02` / effect) and
+`oxbow selftest` renders 120 frames through each. No OpenFX port. Built and measured on
+macOS (Apple Silicon, M4 Max).
+
+### In Resolume Arena, on Windows
+
+On Windows both plugins have been loaded: the DLLs release.yml built from the tagged tree
+load, register and render in Resolume Arena 7.27.1 on software rendering (win-lab, Mesa
+llvmpipe, no GPU, no sound device), with every control matching what the plugins declare
+(24 and 30 host controls, Arena's own Opacity included), Arena's log clean and Arena alive
+at the end, in the fleet's Arena gate: 15 of 15 checks, the audio rows skipped. On the
+source all 14 valued controls were confirmed live one at a time. On the Over 7 were
+(Speed, Feed, Cell Size, Clip Colour, Backdrop, Mix, Opacity) and 13 read inconclusive,
+none dead: the field changes every generation, so no two grabs of the picture are alike
+and the gate's noise floor is high (44 levels). The harness's own sweep (every one of the
+41 parameters moves the picture) carries the rest. Software rendering says nothing about a
+GPU or about speed.
+
+### What filming the release video found
+
+The video is rendered through `cwtest --pipe` (the source) and `cwtest --over --pipe`
+(Resolume's demo clips, resampled to 60 fps). Filming found no defect. It found that at
+the default 135 rows the Gosper gun and the R-pentomino are specks (the video uses 58 and
+106 rows), that much faster than 25 generations a second on a 58-row torus the gun's first
+glider comes round into it within a few seconds, and that a Rule change carries the last
+rule's field on, so each rule in the video starts from a fresh soup. The guide says so.
 
 What is measured, on this machine, at 1280x720 and 320x180 on the GPU and at 320x180 on
 Apple's software renderer:
@@ -137,9 +198,9 @@ generation at all: the cost is the composite.
 
 What is **not** verified, and is the honest limit of this build:
 
-- **Never in Resolume**, on either platform, and never built on Windows: how its 24
-  and 29 parameters present there, the clock unit, the FFT bins and real audio are
-  untested in a host.
+- **Never in Resolume on macOS**, and on Windows only on software rendering with no
+  sound device: the clock unit on macOS, the FFT bins and real audio are untested in a
+  host.
 - **Auto Reseed is a heuristic.** It looks for a population that repeats exactly with a
   period of 30 or less for 120 generations. Ash, oscillators and gliders on a torus all
   do; a field with Noise never does, and a large field can take minutes to settle.

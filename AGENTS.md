@@ -149,6 +149,12 @@ generation, rebirths each bright cell with probability Feed²
   the exact time since a clock-driven generation.
 - **Commit trailer** is this session's model, `Claude Opus 5.5`, not the
   brief's `Claude Fable 5.1` (the brief was written for Fable sub-agents).
+- **v0.1.0 tags the gated commit** (b8c3ffb, the registered tree whose DLLs ran in
+  Arena), not a later docs commit. It was tagged while the Over's control-by-control
+  probing was still running, because the display sleeps after an hour idle and a
+  locked screen stops notarisation; every hard check (load, register, params,
+  render) had passed. The probing then passed too. Both macOS assets were signed and
+  notarised within three minutes of Publish (`spctl`: Notarized Developer ID).
 
 ## The traps
 
@@ -184,6 +190,13 @@ that found them off would draw nothing. `GLState.h` now captures and restores
 **The demo clips are 30 fps**; `--pipe` clocks each frame at 1/60 s, so a clip
 piped in raw runs the automaton at half speed against its picture. Resample
 with `fps=60`.
+
+**Filming (2026-10-04) found no defect**, and three things for the guide: at the
+default 135 rows the gun and the R-pentomino are specks (the video uses 58 and 106
+rows); faster than ~25 generations a second on a 58-row torus the gun's first glider
+comes round into it within the beat; and a Rule change carries the last rule's field on,
+which reads as the last rule, so the video reseeds on each rule change. The take is
+`stoatworks-backend/video/projects/conway/`.
 
 **`clamp( x, lo, hi )` is undefined for lo > hi** in GLSL; the composite's
 cell range clamps the far corner to `min( grid − 1, c0 + span − 1 )`, which
@@ -358,11 +371,22 @@ plugins all move the picture.
 
 Assumed, or not done:
 
-- **Never loaded into Resolume**, on either platform; never built on Windows
-  (MSVC has not seen it: `<cmath>` is included where used, no `M_PI`, no
-  `far`/`near`, but nothing has compiled it). No Arena gate run, so how the 24
-  and 29 parameters present in Arena, the clock unit Resolume sends, the FFT
-  bins and whether events arrive as 1 then 0 are untested in a host.
+- **Never loaded into Resolume on macOS.** Unknown there: how the 24 and 29
+  parameters present, the clock unit, the FFT bins, whether events arrive as 1
+  then 0.
+- **Windows, in Resolume Arena 7.27.1** (win-lab, Mesa llvmpipe, no GPU, no sound
+  device, 2026-10-04): MSVC compiled it first time (ci.yml on the first push, then
+  release.yml), and the DLLs release.yml built from the registered tree (b8c3ffb,
+  the commit v0.1.0 tags) load from Extra Effects, register as `SW Conway` / `LF01`
+  / source and `SW Conway Over` / `LF02` / effect, all 24 + 30 host controls match
+  the declaration (`plugin-bench/arena/expect/conway.json`, seeded by
+  `seed_expect.py` and annotated: probe values for the two integers, `requires:
+  audio` on the three audio rows), both render, Arena's log stays clean and Arena
+  survives: 15 of 15 checks, audio skipped, ONE run. Live on the source: all 14
+  valued controls. Live on the Over: Speed, Feed, Cell Size, Clip Colour,
+  Backdrop, Mix, Opacity; the other 13 INCONCLUSIVE, none dead -- the field changes
+  every generation, so the single-grab noise floor is 44 levels (25 on the
+  source), copperlist's and radar's class, the gate's blind spot.
 - **Occlusion queries in Resolume**: exact by the spec and on both renderers
   here; how many frames late the results arrive inside Resolume is unknown
   (Auto Reseed only lags by them).

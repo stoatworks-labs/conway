@@ -28,6 +28,7 @@ have lived forty generations green, the just-dead trailing.*
 > and all 41 parameters over both plugins are shown to change the picture.
 > It has **never been loaded into Resolume on macOS** — the one host it has run in there is the
 > fleet's own test host, `oxbow`, for 120 frames each.
+> On Windows both plugins have been loaded: a build of this source loads, registers and renders in Resolume Arena 7.27.1 on software rendering (win-lab, Mesa llvmpipe, no GPU, no sound device), with every control matching what the plugins declare (24 and 30 host controls), Arena's log clean, in the fleet's Arena gate: 15 of 15 checks, the audio rows skipped. Because the field changes every generation, no two grabs of the picture are alike, so the gate could confirm only some controls one at a time: all 14 of the source's valued controls and 7 of the effect's, the rest inconclusive (none dead). The harness's own sweep (every one of the 41 parameters moves the picture) carries the rest. Software rendering says nothing about a GPU or about speed.
 > Try it on a spare layer before you put it in a show.
 >
 > This codebase was created with AI assistance, directed and reviewed by a human author.
@@ -89,8 +90,9 @@ glows for a few generations before it is gone.
    down: white where it is busy, green where it has settled.
 2. Change **Rule**. The same field continues under a different rule: *Day & Night* grows blobs,
    *Seeds* explodes, *Maze* builds corridors, *Brian's Brain* sparks.
-3. Pick **Pattern** *Gosper Gun* and turn **Cell Size** up. A single gun fires a glider every 30
-   generations; on the wrapping field they come round again and eventually hit it.
+3. Pick **Pattern** *Gosper Gun* and turn **Cell Size** up: at the default 135 rows the gun is a
+   speck. It fires a glider every 30 generations; on the wrapping field they come round again
+   and eventually hit it, sooner the bigger the cells and the higher the Speed.
 4. Turn **Speed** down to watch one generation at a time, or to 0 and press **Step**.
 5. Leave it. When the soup has settled into ash, **Auto Reseed** starts a new one.
 6. For your own footage: put **SW Conway Over** on a clip. Its bright parts are the seed, and
@@ -103,7 +105,8 @@ glows for a few generations before it is gone.
 Resolume shows every slider as 0 to 1; the ranges below are what the ends of each slider mean.
 
 **Rule** (default *Conway*). Which rule the cells obey. Changing it does not reseed: the field
-carries on under the new rule.
+carries on under the new rule, which at first looks like the old rule's leftovers. Press
+**Reseed** to see the new rule from a soup.
 
 | rule | notation | what it does |
 | --- | --- | --- |
@@ -321,7 +324,9 @@ It records the GL vendor, renderer and version at load, and which shader failed 
 - **Never loaded into Resolume on macOS.** Everything numeric was compiled, rendered and measured
   offline against the real plugin classes in a headless GL context, plus an `oxbow` load. No real
   audio has reached it in a host: the audio controls were checked with a synthetic spectrum only.
-- **Only ever run on an Apple M4 Max**, although the macOS build contains an Intel slice.
+- **Never seen on camera footage**, only on Resolume's bundled CG loops and the harness's card.
+- **Only ever run on an Apple M4 Max**, although the macOS build contains an Intel slice. On
+  Windows, see the note at the top of this guide.
 - **No presets**, no OpenFX version.
 
 ---
