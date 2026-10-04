@@ -86,6 +86,22 @@ rule table (`Rules.h`), the settle law (`Settle.h`) or the parameter tables.
 - Public at `github.com/stoatworks-labs/conway`, registered on the website
   (2026-10-04).
 
+## Browser demo
+- `demo/` is the page at https://conway-demo.stoatworks-labs.com (Cloudflare
+  Worker `conway-demo`, a ROUTE on a proxied AAAA 100:: record -- the zone's
+  custom domains are full; deleting the record takes the page dark with a green
+  deploy). `deploy.yml` redeploys it on a push to main; by hand:
+  `cf-run npx wrangler deploy`.
+- `demo/shaders.js` is GENERATED: after changing `source/Shaders.cpp` run
+  `python3 demo/tools/check_shaders.py --write`; verify.sh fails on drift.
+- The CPU half in `demo/plugin.js` (Controls, Rules, Patterns, Clock, Settle,
+  the buttons, the salts, the re-grid, the palettes) is a hand port nobody
+  checks but a reader: change it with the C++.
+- The page counts the population by reading the plugin's count pass back (an R8
+  target, readPixels), not by an occlusion query: WebGL2 has none that counts.
+- `demo/vendor/` is the shared kit: never edit it, re-vendor with
+  `stoatworks-backend/resolume-demo/sync.sh`.
+
 ## Not done yet
 - Never loaded into Resolume on macOS (oxbow selftest only). No OpenFX port.
 - `StoatworksAbout.h`, `ATTRIBUTIONS.md`, `.github/FUNDING.yml` and

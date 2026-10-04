@@ -96,7 +96,7 @@ it.
 
 ## Status
 
-**v0.1.0, built 4 October 2026, not released.** No user guide yet, no browser demo,
+**v0.1.0, built 4 October 2026, not released.** No user guide yet,
 no OpenFX port, no repository on GitHub.
 
 It has **never been loaded into Resolume**, on macOS or Windows. `oxbow probe` reads the
@@ -152,7 +152,24 @@ What is **not** verified, and is the honest limit of this build:
   frame runs at most 32 generations and drops the rest rather than bursting.
 - The colours and palettes are chosen by eye.
 
-No OpenFX port yet, no browser demo.
+No OpenFX port yet.
+
+## Browser demo
+
+**<https://conway-demo.stoatworks-labs.com/>** — both plugins, their own
+controls and defaults. The seed, copy, step, count and composite passes are the
+plugin's own GLSL, spliced unedited into `demo/shaders.js`
+(`demo/tools/check_shaders.py`, run by `tools/verify.sh`, fails on a changed
+character). The CPU half — the generation clock, the buttons, the rule table
+parsed from its notation, the RLE stamps, the grid and its centred re-grid, the
+salts, Smooth's phase, the palettes and the settle law — is a JavaScript port in
+`demo/plugin.js` that **nothing checks but a reader** (it was compared once with
+`cwtest` and agreed cell for cell). WebGL2 has no exact occlusion query, so the
+page counts the population by reading the plugin's count pass back. There is no
+audio in a browser, so Audio, Audio Steps and Audio Seeds are absent; Step and
+Reseed are toggles the page releases; Seed is a dropdown (0–99). The Over runs
+on the page's generated clips. It is a demo, not the plugin, and the page says
+what it does not reproduce.
 
 ## Build
 

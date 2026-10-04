@@ -266,6 +266,70 @@ generations it ran, caught by `--clock-law`; a constant population never
 settled, caught by `--settle-law`) are caught too. This proves the harness
 drives the shaders the plugin ships, not a copy of them: it has none.
 
+## The browser demo (2026-10-04)
+
+`demo/` is <https://conway-demo.stoatworks-labs.com>, built to the fleet's
+`resolume-demo` kit rules (`~/Projects/resolume/specs/DEMO-BRIEF.md`) by a
+sub-agent of the release session. What a reader of it must know:
+
+- **The shaders are the plugin's**, all eight pieces plus kVersion, spliced by
+  `demo/tools/check_shaders.py --write` into `demo/shaders.js` and compared
+  character for character by the same script, which `tools/verify.sh` runs.
+  Negative-controlled once: the step's survival test `& 1u` -> `^ 1u` in the
+  copy fails it. **Every pass compiles in WebGL2 as spliced**: the kit's
+  `port()` adds the ES precision lines (including `usampler2D`'s), and R32UI is
+  a colour attachment WebGL2 renders to natively, so the kit's PassBuffer serves
+  the state with `filter: 'nearest'` and no integer-texture helper was needed.
+- **The CPU half is a port that only a reader checks**: Controls.cpp's
+  conversions, `ThresholdU32` and `GridFor`; the rule table and Rules.cpp's
+  parser; the RLE parser and the stamp the right way up; Clock.h; the buttons
+  (Seed read before Reseed, as the sweep's fix has it); a Pattern change
+  reseeding; the centred re-grid copy; the salts (Hash.h's PCG via
+  `Math.imul`); Smooth's phase; `lookOf`; Settle.h and the epoch rule for stale
+  counts.
+- **Compared once with the plugin, and it agreed exactly.** A scratch script
+  drove the page headlessly (SwiftShader) and `cwtest --pipe` (this Mac's GPU)
+  on the same 240 x 135 grid: generation 0 cell for cell for Soup (11,248
+  cells), Acorn, Gosper Gun and Gliders, 0 cells different (a vertically
+  flipped page differs in 8 to 14,874, so orientation is tested); the
+  population after 1, 10 and 40 generations of Conway, 10 with Noise 0.7, 10 of
+  Brian's Brain, 25 of Star Wars with dead edges, 5 after Seed 37 + Reseed, 30
+  of a dense glider fleet; and the Over, the page's bars clip piped into
+  `cwtest --over`: generation 0 cell for cell (23,064) and 12 generations with
+  Feed 0.6. Every number identical. Nothing repeats that comparison; a change
+  to the C++ half needs the port changed by hand.
+- **The population is a readback, decided without asking.** The plugin counts
+  with `GL_SAMPLES_PASSED`; WebGL2 has only `ANY_SAMPLES_PASSED` (a yes or no).
+  The page runs the plugin's own count pass with colour writes ON into the R8
+  target the plugin allocates (cleared first), `readPixels` it (RED where the
+  implementation offers it, else RGBA, `PACK_ALIGNMENT` 1) and counts the marks:
+  the same cells, exactly. Counts are queued and handed to the settle law at
+  the start of the next frame, as the plugin's polled queries come back.
+  Readback costs, so a frame counts at most 2^21 cells (one generation at 1080
+  rows, every generation at the default grid); past that a generation is not
+  counted, the law's gap rule restarts the history, and Auto Reseed waits. The
+  page says all of this. Checked: Diehard at 500 gen/s auto-reseeds at exactly
+  generation 137 (gone at 130, then 8 empty counts).
+- **Differences, all said on the page:** no audio (Audio, Audio Steps, Audio
+  Seeds absent -- with no spectrum the analyser never fires, so nothing
+  changes); Step and Reseed are toggles the page releases after one frame;
+  Seed is a 0-99 dropdown (FF_TYPE_INTEGER 0-9999); no About block; the clock
+  is the page's seconds, the unit vote not ported, Restart a jump (the field
+  carries on); the Plugin switch is a new instance at that constructor's
+  defaults; Pattern is two rows of the same name (six elements for the source,
+  seven for the Over) because the kit's option rows have one fixed list; with
+  the page paused, Smooth's crossfade after a Step press stays at its start
+  (no frames run); the Over's clip is the kit's premultiplied one.
+- **The Over's clips** are `spot` (default: lights on black, which Threshold
+  0.5 reads as three seeds), `grid`, `scene`, `bars`, `alpha`.
+- **Seen, not a fault:** headless Chrome logs ANGLE's "GPU stall due to
+  ReadPixels" performance WARNING a few times per browser process. That is the
+  page's own count readback, synchronous by design; it is not an error.
+- **The live page logs one console error that is not the page's**: the zone
+  injects an inline `/cdn-cgi/challenge-platform` script and the page's
+  `script-src 'self'` CSP blocks it, as on every `*-demo` host (fleet-wide,
+  recorded in the demo brief's sweep). Locally there are no errors.
+
 ## Shape of the code
 
     source/Controls.*      the ParamIds, HostOrder(), groups, names, every 0..1 -> units mapping
@@ -281,6 +345,7 @@ drives the shaders the plugin ships, not a copy of them: it has none.
     source/Audio.*         the primed analyser
     tools/cwtest/          the harness: the rig, the CPU steppers, the checks
     tools/sweep.py, mutate.sh, verify.sh, glslc.sh
+    demo/                  the browser demo: plugin.js (the port), shaders.js (generated), vendor/ (the kit)
 
 ## What is genuinely verified, and what is assumed
 
