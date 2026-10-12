@@ -168,7 +168,7 @@ Apple's software renderer:
 | the family | Day & Night and Anneal: step( not x ) = not step( x ), 0 cells disagree in 20 generations; Life without Death: 0 deaths; Seeds: 0 survivals; Replicator: a 7x7 pattern is 8 copies at ±8 after 8 generations, 0 cells wrong; Brian's Brain: 0 survivals, 0 births straight after a death |
 | every rule | 13 rules × torus and dead edges × 64 generations of soup on a 157x93 grid: identical to the harness's stepper, every cell's age and time since death included |
 | population | the occlusion query's count equals the state's for every one of 301 generations |
-| Auto Reseed | ash with a population period of 30 settles at generation 149 (window 120 + 30 − 1), period 30, exactly; an empty field at 7; the R-pentomino boils 1000 generations without settling |
+| Auto Reseed | ash with a population period of 30 settles at generation 149 (window 120 + 30 − 1), period 30, exactly; an empty field at 7 (8 empty generations, counting from 0); the R-pentomino boils 1000 generations without settling |
 | clock | from a host clock at 499,000,000 ms (a float resolves 32 ms there) every frame's dt is within 6×10⁻¹¹ s, and the generation count is floor( Speed × elapsed ) at every checkpoint; the clock law holds over 36,000 frames at 60, 23.976 and jittered rates |
 | coverage | each pixel is the lit area it covers: worst 3×10⁻⁵ at 8-px cells with a gap, 1.6×10⁻⁴ at 7.42-px cells, 0 at half-pixel cells, each inside its bound from float edges |
 | Over | Reseed from the clip makes exactly the cells whose centres are bright (2393 cells, 0 wrong, a saturated blue counted), not mirrored; Mix 0 returns the clip bit for bit; Feed 1 keeps every bright cell alive |

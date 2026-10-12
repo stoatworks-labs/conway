@@ -174,8 +174,9 @@ as it is now).
 **Auto Reseed** (on by default). The plugin counts every generation's live cells exactly. When
 the count has repeated exactly, with a period of 30 generations or less, for 120 generations,
 the field has settled into ash and wandering gliders, and it reseeds. An empty field reseeds
-after 8 generations. A large field can take minutes to settle. With **Noise** above 0 the count
-never repeats exactly, so Auto Reseed never fires: Noise is the other way to keep a field alive.
+once it has been empty for 8 generations. A large field can take minutes to settle. With
+**Noise** above 0 the count never repeats exactly, so Auto Reseed never fires: Noise is the
+other way to keep a field alive.
 
 **Noise** (0; one in a million to one in a hundred per cell per generation, default 0).
 Spontaneous births anywhere, outside the rule. A little keeps ash from ever going still.
