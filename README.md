@@ -1,33 +1,25 @@
 # conway
 
 > **AI-assisted project.** This codebase was created with [Claude](https://claude.com/claude-code)
-> (Anthropic), directed and reviewed by a human author. It has **never been
-> loaded into Resolume on macOS**; there it is loaded by [oxbow](https://github.com/stoatworks-labs/oxbow),
-> a real FFGL host that is not Resolume. On Windows both plugins pass the fleet's Arena gate in
-> Resolume Arena 7.27.1 on software rendering (see [Status](#status)). Everything below is measured by an offline
-> harness that drives the real plugin classes in a headless GL context, on this Mac's
-> GPU at two rasters and again on Apple's software renderer. `cwtest --patterns` asks
-> the plugin for the published facts of Life and gets them: the R-pentomino has **116
-> cells at generation 1103** (118 at 1102) and through 1200, Diehard is **gone at 130**,
-> Gosper's gun adds **a glider every 30 generations**, the oscillators come back at
-> periods 2, 2, 2, 3 and 15 and not before, the glider moves (1,1) every 4 and the
-> lightweight spaceship 2. `--reference` steps all thirteen rules on a torus and with
-> dead edges for 64 generations and matches the harness's own stepper **bit for bit**,
-> ages included. `--coverage` finds every pixel within float rounding of the live area
-> it covers. `cwtest --negative` re-runs fourteen checks against deliberately wrong
-> models, and `tools/mutate.sh` changes one character of the shipped shaders and code;
-> every one is caught. A control sweep fails if any parameter does nothing.
+> (Anthropic), directed and reviewed by a human author. It's **never been
+> loaded into Resolume on macOS**; there it's loaded by [oxbow](https://github.com/stoatworks-labs/oxbow),
+> a proper FFGL host that isn't Resolume. On Windows both plugins pass the fleet's Arena gate in
+> Resolume Arena 7.27.1 on software rendering. Everything else is measured by an offline harness
+> that drives the plugin classes themselves in a headless GL context, on this Mac's GPU at two
+> rasters and again on Apple's software renderer. It asks the plugin for the published facts of
+> Life and gets them, and every wrong model and one-character mutant I've thrown at the checks
+> gets caught. The full rundown is under [Status](#status).
 
-Conway's Game of Life for Resolume Arena/Avenue, as two FFGL plugins: **SW
+Conway's Game of Life for Resolume Arena and Avenue, as two FFGL plugins: **SW
 Conway**, a source that plays Life (and twelve of its relatives) from a soup or a
 famous pattern, and **SW Conway Over**, an effect whose clip seeds the field and
-keeps feeding it.
+keeps feeding it. Route some audio to it and Life steps on the beat.
 
 ![The Game of Life after ten seconds: a soup burning down to ash, white newborn cells at the active edges, green still lifes and blinkers, dim trails where cells just died](docs/hero.png)
 
 <sub>The source's defaults after ten seconds (generation 149): a 35% soup burning
 down, newborn cells white, cells that have lived forty generations green, the
-just-dead trailing. Rendered by the plugin's offline harness (`cwtest`), not
+just-dead trailing. Rendered by the plugin's offline harness (`cwtest`) rather than
 captured from Resolume.</sub>
 
 <!-- downloads:start -->
@@ -71,8 +63,8 @@ macOS builds are signed and notarised and open normally. The Windows builds are 
 **A grid of cells, each alive or dead, all updated at once by one rule that looks
 only at the eight neighbours.** Conway's rule is B3/S23: a dead cell with exactly
 three live neighbours is born, a live one with two or three survives, and every
-other cell dies or stays dead. Nothing here is drawn as a picture of Life. The field
-is an integer texture, one generation is one pass, and everything you recognise
+other cell dies or stays dead. None of it is a picture drawn to look like Life. The
+field is an integer texture, one generation is one pass, and everything you'd recognise
 falls out of the rule:
 
 - **gliders** crawl diagonally, one cell every four generations, and **spaceships**
@@ -92,8 +84,8 @@ Wars) whose dying cells take a generation or two to clear before anything can be
 there.
 
 The look is the state. A cell's colour is its **age**, newborn to elder, so still
-lifes (old) and the boiling front (young) read apart at a glance; a cell that has just
-died glows for a few generations. And the field **reseeds itself** when it has settled:
+lifes (old) and the boiling front (young) read apart at a glance, and a cell that's just
+died glows for a few generations. The field also **reseeds itself** once it's settled:
 the plugin counts every generation's live cells exactly and notices when the count has
 been repeating.
 
@@ -132,15 +124,15 @@ it.
 
 ## Status
 
-**v0.1.0, released 4 October 2026, and honestly early.** There is a
+**v0.1.0, released 4 October 2026, and still early days.** There's a
 [user guide](https://stoatworks-labs.com/software/conway/guide/)
 ([PDF](docs/USER-GUIDE.pdf)), a [project page](https://stoatworks-labs.com/software/conway/)
 and a [browser demo](https://conway-demo.stoatworks-labs.com/) (below).
 
-It has **never been loaded into Resolume on macOS**. `oxbow probe` reads the bundles as
+It's **never been loaded into Resolume on macOS**. `oxbow probe` reads the bundles as
 a host does (`SW Conway` / `LF01` / source, `SW Conway Over` / `LF02` / effect) and
-`oxbow selftest` renders 120 frames through each. No OpenFX port. Built and measured on
-macOS (Apple Silicon, M4 Max).
+`oxbow selftest` renders 120 frames through each. There's no OpenFX port. It was built and
+measured on macOS (Apple Silicon, M4 Max).
 
 ### In Resolume Arena, on Windows
 
@@ -148,24 +140,25 @@ On Windows both plugins have been loaded: the DLLs release.yml built from the ta
 load, register and render in Resolume Arena 7.27.1 on software rendering (win-lab, Mesa
 llvmpipe, no GPU, no sound device), with every control matching what the plugins declare
 (24 and 30 host controls, Arena's own Opacity included), Arena's log clean and Arena alive
-at the end, in the fleet's Arena gate: 15 of 15 checks, the audio rows skipped. On the
-source all 14 valued controls were confirmed live one at a time. On the Over 7 were
+at the end, in the fleet's Arena gate: 15 of 15 checks, with the audio rows skipped. On
+the source, all 14 valued controls were confirmed live one at a time. On the Over, 7 were
 (Speed, Feed, Cell Size, Clip Colour, Backdrop, Mix, Opacity) and 13 read inconclusive,
-none dead: the field changes every generation, so no two grabs of the picture are alike
+none dead. The field changes every generation, so no two grabs of the picture are alike
 and the gate's noise floor is high (44 levels). The harness's own sweep (every one of the
-41 parameters moves the picture) carries the rest. Software rendering says nothing about a
-GPU or about speed.
+41 parameters moves the picture) covers the rest. Software rendering tells you nothing
+about a GPU or about speed.
 
 ### What filming the release video found
 
 The video is rendered through `cwtest --pipe` (the source) and `cwtest --over --pipe`
-(Resolume's demo clips, resampled to 60 fps). Filming found no defect. It found that at
-the default 135 rows the Gosper gun and the R-pentomino are specks (the video uses 58 and
-106 rows), that much faster than 25 generations a second on a 58-row torus the gun's first
-glider comes round into it within a few seconds, and that a Rule change carries the last
-rule's field on, so each rule in the video starts from a fresh soup. The guide says so.
+(Resolume's demo clips, resampled to 60 fps). Filming it didn't turn up any defects, but it
+did show up a few things worth knowing. At the default 135 rows the Gosper gun and the
+R-pentomino are specks (the video uses 58 and 106 rows). Much faster than 25 generations a
+second on a 58-row torus, the gun's first glider comes round the torus and hits it within a
+few seconds. And a Rule change carries the last rule's field on, so each rule in the video
+starts from a fresh soup. The guide says so too.
 
-What is measured, on this machine, at 1280x720 and 320x180 on the GPU and at 320x180 on
+What's measured, on this Mac, at 1280x720 and 320x180 on the GPU and at 320x180 on
 Apple's software renderer:
 
 | | |
@@ -186,21 +179,21 @@ Apple's software renderer:
 | mutants | **5** one-character changes (three GLSL, two C++), **all 5** caught |
 | dead controls | **41** parameters over both plugins, all live |
 
-The software renderer skips the two 640x640 methuselah runs (minutes each there;
-`CWTEST_HEAVY=1` runs them) and says so; they repeat the step and count passes that
-`--reference` and `--count` hold bit for bit on it.
+The software renderer skips the two 640x640 methuselah runs (they take minutes each
+there; `CWTEST_HEAVY=1` runs them) and says so. They repeat the step and count passes that
+`--reference` and `--count` already hold bit for bit on it.
 
 Render cost (`cwtest --bench`, the median frame, on a machine shared with other
 builds): **SW Conway 0.32 ms at 720p, 0.18 at 1080p, 0.37 at 4K; SW Conway Over 0.18,
 0.26 and 0.71 ms**; at Cell Size 0 (1080 rows, two million cells) 0.19, 0.21 and 0.45
-ms — 1–4% of a 60 fps frame. At 15 generations a second most frames run no
-generation at all: the cost is the composite.
+ms, which is 1–4% of a 60 fps frame. At 15 generations a second most frames don't run a
+generation at all, so the cost is the composite.
 
-What is **not** verified, and is the honest limit of this build:
+What **isn't** verified yet:
 
 - **Never in Resolume on macOS**, and on Windows only on software rendering with no
-  sound device: the clock unit on macOS, the FFT bins and real audio are untested in a
-  host.
+  sound device, so the clock unit on macOS, the FFT bins and real audio haven't been
+  tested in a host.
 - **Auto Reseed is a heuristic.** It looks for a population that repeats exactly with a
   period of 30 or less for 120 generations. Ash, oscillators and gliders on a torus all
   do; a field with Noise never does, and a large field can take minutes to settle.
@@ -211,26 +204,26 @@ What is **not** verified, and is the honest limit of this build:
   the field: lower or raise it for the clip.
 - **At 500 generations a second below 16 fps** the automaton runs slower than Speed: a
   frame runs at most 32 generations and drops the rest rather than bursting.
-- The colours and palettes are chosen by eye.
+- I picked the colours and palettes by eye.
 
 No OpenFX port yet.
 
 ## Browser demo
 
-**<https://conway-demo.stoatworks-labs.com/>** — both plugins, their own
+**<https://conway-demo.stoatworks-labs.com/>** has both plugins, with their own
 controls and defaults. The seed, copy, step, count and composite passes are the
 plugin's own GLSL, spliced unedited into `demo/shaders.js`
 (`demo/tools/check_shaders.py`, run by `tools/verify.sh`, fails on a changed
-character). The CPU half — the generation clock, the buttons, the rule table
+character). The CPU half (the generation clock, the buttons, the rule table
 parsed from its notation, the RLE stamps, the grid and its centred re-grid, the
-salts, Smooth's phase, the palettes and the settle law — is a JavaScript port in
-`demo/plugin.js` that **nothing checks but a reader** (it was compared once with
-`cwtest` and agreed cell for cell). WebGL2 has no exact occlusion query, so the
-page counts the population by reading the plugin's count pass back. There is no
+salts, Smooth's phase, the palettes and the settle law) is a JavaScript port in
+`demo/plugin.js` that nothing checks but somebody reading it. I compared it once with
+`cwtest` and it agreed cell for cell. WebGL2 has no exact occlusion query, so the
+page counts the population by reading the plugin's count pass back. There's no
 audio in a browser, so Audio, Audio Steps and Audio Seeds are absent; Step and
 Reseed are toggles the page releases; Seed is a dropdown (0–99). The Over runs
-on the page's generated clips. It is a demo, not the plugin, and the page says
-what it does not reproduce.
+on the page's generated clips. It's still a demo, not the plugin, and the page says
+what it doesn't reproduce.
 
 ## Build
 
@@ -244,7 +237,7 @@ universal (arm64 + x86_64); Windows needs GLEW via vcpkg.
 
 ## Building and testing
 
-The offline harness renders the real plugin classes headlessly:
+The offline harness renders the plugin classes themselves, headless:
 
     ./build/cwtest --out /tmp/life.png --frames 600     the source
     ./build/cwtest --over --out /tmp/over.png           the effect, on a night-street card

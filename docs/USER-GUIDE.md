@@ -1,12 +1,13 @@
 # Conway user guide
 
-Conway is **Conway's Game of Life, for [Resolume](https://resolume.com) Arena and Avenue**, as
-two FFGL plugins in one download: **SW Conway**, a source that plays Life (and twelve of its
+Conway is Conway's Game of Life for [Resolume](https://resolume.com) Arena and Avenue, as two
+FFGL plugins in one download: **SW Conway**, a source that plays Life (and twelve of its
 relatives) from a random soup or a famous pattern, and **SW Conway Over**, an effect whose clip
-seeds the field and keeps feeding it. Nothing is drawn as a picture of Life. A grid of cells
-runs the rule, one generation at a time, and everything you recognise falls out of it: gliders
-crawling across the frame, blinkers and pulsars, a gun firing gliders, a soup boiling and then
-settling into still shapes.
+seeds the field and keeps feeding it.
+
+None of it is a picture drawn to look like Life. A grid of cells runs the rule, one generation at
+a time, and everything you'd recognise falls out of it: gliders crawling across the frame,
+blinkers and pulsars, a gun firing gliders, a soup boiling and then settling into still shapes.
 
 ![The Game of Life after ten seconds: a soup burning down to ash, white newborn cells at the active edges, green still lifes and blinkers, dim trails where cells just died](hero.png)
 
@@ -14,8 +15,8 @@ settling into still shapes.
 rather than captured from Resolume: a 35% soup burning down, newborn cells white, cells that
 have lived forty generations green, the just-dead trailing.*
 
-> **Before you rely on this:** released at **v0.1.0**, and honestly early. The automaton is
-> measured rather than asserted, by a harness that drives the real plugin classes headlessly, at
+> **Before you rely on this:** released at **v0.1.0**, and still early days. The automaton is
+> measured rather than asserted, by a harness that drives the plugin classes themselves headless, at
 > two rasters and on a software renderer. It asks the plugin for the published facts of Life
 > and gets them: the R-pentomino has 116 cells at generation 1103 (118 at 1102), Diehard is gone
 > at 130, Gosper's gun adds a glider every 30 generations, the oscillators come back at periods
@@ -23,12 +24,20 @@ have lived forty generations green, the just-dead trailing.*
 > the lightweight spaceship two cells across. All thirteen rules match an independent stepper
 > cell for cell for 64 generations, on a torus and with dead edges, every cell's age included;
 > Day & Night and Anneal are symmetric under swapping live and dead, as published. Every pixel
-> is the live area it covers, to within float rounding. Fourteen deliberately wrong models are
-> each shown to fail their check, one-character mutations of the shipped shaders are caught,
-> and all 41 parameters over both plugins are shown to change the picture.
-> It has **never been loaded into Resolume on macOS** — the one host it has run in there is the
+> is the live area it covers, to within float rounding. Fourteen models that are wrong on purpose
+> each fail their check, one-character mutations of the shipped shaders are caught, and all 41
+> parameters over both plugins are shown to change the picture.
+> It's **never been loaded into Resolume on macOS**. The one host it's run in there is the
 > fleet's own test host, `oxbow`, for 120 frames each.
-> On Windows both plugins have been loaded: a build of this source loads, registers and renders in Resolume Arena 7.27.1 on software rendering (win-lab, Mesa llvmpipe, no GPU, no sound device), with every control matching what the plugins declare (24 and 30 host controls), Arena's log clean, in the fleet's Arena gate: 15 of 15 checks, the audio rows skipped. Because the field changes every generation, no two grabs of the picture are alike, so the gate could confirm only some controls one at a time: all 14 of the source's valued controls and 7 of the effect's, the rest inconclusive (none dead). The harness's own sweep (every one of the 41 parameters moves the picture) carries the rest. Software rendering says nothing about a GPU or about speed.
+> On Windows both plugins have been loaded: a build of this source loads, registers and renders
+> in Resolume Arena 7.27.1 on software rendering (win-lab, Mesa llvmpipe, no GPU, no sound
+> device), with every control matching what the plugins declare (24 and 30 host controls) and
+> Arena's log clean, in the fleet's Arena gate: 15 of 15 checks, with the audio rows skipped.
+> Because the field changes every generation, no two grabs of the picture are alike, so the gate
+> could only confirm some controls one at a time: all 14 of the source's valued controls and 7 of
+> the effect's, with the rest inconclusive (none dead). The harness's own sweep (every one of the
+> 41 parameters moves the picture) covers the rest. Software rendering tells you nothing about a
+> GPU or about speed.
 > Try it on a spare layer before you put it in a show.
 >
 > This codebase was created with AI assistance, directed and reviewed by a human author.
@@ -37,7 +46,7 @@ have lived forty generations green, the just-dead trailing.*
 
 ## Installing
 
-Every download carries both plugins: **SW Conway** (a source) and **SW Conway Over** (an
+Every download has both plugins in it: **SW Conway** (a source) and **SW Conway Over** (an
 effect). Drop them into Resolume's effects folder and restart Resolume:
 
 ```
@@ -45,13 +54,13 @@ macOS    ~/Documents/Resolume Arena/Extra Effects/
 Windows  %USERPROFILE%\Documents\Resolume Arena\Extra Effects\
 ```
 
-Avenue uses the same layout under its own folder name. SW Conway appears among the sources and
+Avenue uses the same layout under its own folder name. SW Conway shows up among the sources and
 SW Conway Over in the effects browser.
 
-The macOS download is a universal build (Apple silicon and Intel), as a `.dmg` or a `.zip`. It
-is Developer ID-signed and notarised by the release pipeline after publication, so the bundles
-simply load; if macOS refuses a download, it predates the signing — download it again. The
-Windows download is an x64 installer or a `.zip`. It is not code-signed, so the installer trips
+The macOS download is a universal build (Apple silicon and Intel), as a `.dmg` or a `.zip`. It's
+Developer ID-signed and notarised by the release pipeline after publication, so the bundles just
+load. If macOS refuses a download, it's from before the signing, so download it again. The
+Windows download is an x64 installer or a `.zip`. It isn't code-signed, so the installer trips
 SmartScreen once: **More info** → **Run anyway**.
 
 ---
@@ -65,8 +74,8 @@ neighbours at once, and Conway's rule decides what it becomes:
 - a **live** cell with **two or three** live neighbours **survives**;
 - every other cell **dies**, or stays dead.
 
-That is all. The rule is the same for every cell and every generation, and nobody draws the
-shapes. They are what the rule does:
+That's it. The rule is the same for every cell and every generation, and nobody draws the
+shapes. They're just what the rule does:
 
 | what you see | why |
 | --- | --- |
@@ -79,15 +88,15 @@ shapes. They are what the rule does:
 | **ash** | a random soup burns down to still shapes (blocks, beehives, boats), blinkers, and gliders wandering until they hit something |
 
 The look is the state. A cell's **colour is its age**, from newborn to elder, so the still
-shapes (old) and the boiling front (young) read apart at a glance, and a cell that has just died
-glows for a few generations before it is gone.
+shapes (old) and the boiling front (young) read apart at a glance, and a cell that's just died
+glows for a few generations before it's gone.
 
 ---
 
 ## Start here
 
 1. Put **SW Conway** in a clip slot and trigger it. A random soup appears and starts to burn
-   down: white where it is busy, green where it has settled.
+   down: white where it's busy, green where it's settled.
 2. Change **Rule**. The same field continues under a different rule: *Day & Night* grows blobs,
    *Seeds* explodes, *Maze* builds corridors, *Brian's Brain* sparks.
 3. Pick **Pattern** *Gosper Gun* and turn **Cell Size** up: at the default 135 rows the gun is a
@@ -104,7 +113,7 @@ glows for a few generations before it is gone.
 
 Resolume shows every slider as 0 to 1; the ranges below are what the ends of each slider mean.
 
-**Rule** (default *Conway*). Which rule the cells obey. Changing it does not reseed: the field
+**Rule** (default *Conway*). Which rule the cells obey. Changing it doesn't reseed: the field
 carries on under the new rule, which at first looks like the old rule's leftovers. Press
 **Reseed** to see the new rule from a soup.
 
@@ -193,8 +202,8 @@ fires nothing, even if the music is already loud.
 ## The Look group
 
 **Cell Size** (default 135 rows: 8 pixels at 1080p). From a cell a pixel tall at 1080p (1080
-rows) to sixteen rows. The columns follow the output's shape. The grid does not depend on the
-output's size, so the field looks the same at any resolution, and a cell that is a fraction of
+rows) to sixteen rows. The columns follow the output's shape. The grid doesn't depend on the
+output's size, so the field looks the same at any resolution, and a cell that's a fraction of
 a pixel wide is drawn evenly, never as alternating 7- and 8-pixel columns. Changing Cell Size
 keeps the cells: the field is cropped or extended around its middle, not reseeded.
 
@@ -207,7 +216,7 @@ growing regions come out as rainbow bands.
 **Age Span** (1 to 1000 generations, default 40). How many generations a cell takes to go from
 the newborn colour to the elder one (with Spectrum, one turn of the hue wheel).
 
-**Trail** (off; 0.5 to 200 generations, default 3). How long a cell that has just died keeps
+**Trail** (off; 0.5 to 200 generations, default 3). How long a cell that's just died keeps
 glowing: its brightness falls by e every Trail generations.
 
 The Over only:
@@ -231,7 +240,7 @@ every generation, cells under its bright parts are reborn at random. So bright s
 crowded with newborn cells, and Life spreads out from their edges into the dark.
 
 Point it at something with bright shapes against a dark ground: Resolume's Trinity (rings),
-BattleWeapon Tank, OrganicMotions and Galactucity all read well. A clip that is bright almost
+BattleWeapon Tank, OrganicMotions and Galactucity all read well. A clip that's bright almost
 everywhere (IntoTheGlow) fills the field: raise Threshold. A dim grey clip (Beat 003) seeds
 almost nothing at the default: lower Threshold to 0.25.
 
@@ -254,11 +263,11 @@ cells over a picture.
 - **The rules** are written once, in the notation above, and parsed into the masks the pass
   uses.
 - **Time** is Resolume's clock in double precision (it runs to hundreds of millions of
-  milliseconds, where a single-precision float cannot resolve a frame). Speed times the elapsed
+  milliseconds, where a single-precision float can't resolve a frame). Speed times the elapsed
   time is owed; whole generations run and the fraction carries, so the count is exact at any
   frame rate.
 - **The population** of every generation is counted on the graphics card by an occlusion query
-  over the live cells, exactly, and read back when it is ready, which drives Auto Reseed.
+  over the live cells, exactly, and read back when it's ready, which drives Auto Reseed.
 - **The picture** averages the grid over each pixel's footprint, weighting every cell by the
   exact area it covers.
 
@@ -268,14 +277,14 @@ cells over a picture.
 
 At the defaults, on an Apple M4 Max shared with other builds, the median frame is **0.32 ms at
 720p, 0.18 at 1080p and 0.37 at 4K** for SW Conway, and **0.18, 0.26 and 0.71 ms** for SW Conway
-Over; with Cell Size at its smallest (1080 rows, two million cells) 0.19, 0.21 and 0.45 ms. That
-is 1–4% of a 60 fps frame.
+Over; with Cell Size at its smallest (1080 rows, two million cells) 0.19, 0.21 and 0.45 ms.
+That's 1–4% of a 60 fps frame.
 
 ---
 
 ## If it looks wrong
 
-**The field went still and nothing happens.** It has settled; Auto Reseed waits until the count
+**The field went still and nothing happens.** It's settled; Auto Reseed waits until the count
 has repeated for 120 generations. Press Reseed, or turn on a little Noise.
 
 **Auto Reseed never fires.** Noise is above 0, or the field is still busy somewhere. A large
@@ -286,7 +295,7 @@ field can take minutes to burn down.
 **The Over is a solid mass.** The clip is bright almost everywhere: raise Threshold, or lower
 Feed.
 
-**Cells look smeared between generations.** That is Smooth: set it to 0 for hard cuts.
+**Cells look smeared between generations.** That's Smooth: set it to 0 for hard cuts.
 
 **Changing Rule did nothing.** The field carries on under the new rule from where it was; some
 rules change ash slowly. Press Reseed to start the new rule from a soup.
@@ -294,8 +303,8 @@ rules change ash slowly. Press Reseed to start the new rule from a soup.
 **Neither plugin is in the browser.** Check the folder under Installing, and that Resolume was
 restarted.
 
-**It does nothing at all.** A shader that will not compile looks exactly like that, and the real
-message is in the log:
+**It does nothing at all.** That's what a shader that won't compile looks like, and the actual
+error is in the log:
 
 ```
 macOS    ~/Library/Logs/conway/conway.YYYY-MM-DD.log
@@ -317,28 +326,28 @@ It records the GL vendor, renderer and version at load, and which shader failed 
   frame runs at most 32 generations.
 - **Threshold is one number for the whole clip**, read from one pixel per cell: a clip with a
   wide range of brightness may want it moved.
-- **The colours are chosen by eye**; the age and trail are a look, not a measurement of anything.
+- **The colours are chosen by eye** (mine); the age and trail are a look, not a measurement of anything.
 - **The literature was checked against Wikipedia** for this release (the LifeWiki, where the
   patterns are published, refuses automated reads), and every number is reproduced by the
   harness's own stepper before the plugin is asked for it.
 - **Never loaded into Resolume on macOS.** Everything numeric was compiled, rendered and measured
-  offline against the real plugin classes in a headless GL context, plus an `oxbow` load. No real
+  offline against the plugin classes themselves in a headless GL context, plus an `oxbow` load. No real
   audio has reached it in a host: the audio controls were checked with a synthetic spectrum only.
 - **Never seen on camera footage**, only on Resolume's bundled CG loops and the harness's card.
 - **Only ever run on an Apple M4 Max**, although the macOS build contains an Intel slice. On
   Windows, see the note at the top of this guide.
 - **No presets**, no OpenFX version.
-- **There is a browser demo** at [conway-demo.stoatworks-labs.com](https://conway-demo.stoatworks-labs.com/).
-  It is a port to a web page, not the plugin: the shaders run unedited in WebGL2, and the
+- **There's a browser demo** at [conway-demo.stoatworks-labs.com](https://conway-demo.stoatworks-labs.com/).
+  It's a port to a web page rather than the plugin: the shaders run unedited in WebGL2, and the
   generation clock, the buttons, the rules, the patterns, the grid and the settle law are
   rewritten in JavaScript. WebGL2 has no exact occlusion count, so the page reads its count
   pass back to find the population. It has no audio, so the audio controls are left off, and the
-  page lists what else it does not reproduce.
+  page lists what else it doesn't reproduce.
 
 ---
 
 ## About
 
-The last group, **About**, carries the plugins' name, version, licence and maker, and buttons that
+The last group, **About**, has the plugins' name, version, licence and maker, and buttons that
 open this user guide ([stoatworks-labs.com/software/conway/guide/](https://stoatworks-labs.com/software/conway/guide/)),
 the project page, the source on GitHub and the support page in your browser.
